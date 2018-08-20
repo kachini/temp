@@ -16,7 +16,7 @@ def print_temperature(temp_log_filename,temperature):
     
     my_dict = collections.OrderedDict()
     ts=[]
-    lines = tuple(open(temp_log_filename, 'r'))
+    lines = tuple(open('./temp_results/'+ temp_log_filename, 'r'))
     
     for line in lines:
     
@@ -40,12 +40,17 @@ def print_temperature(temp_log_filename,temperature):
 #    temperature[serial_number]['timestamp']=cur_timestamp
     temperature[serial_number][file_timestamp]=collections.OrderedDict()
     for part in my_dict:
-     temperature[serial_number][file_timestamp][part]={}
-     temperature[serial_number][file_timestamp][part]['max']=np.max(np.array(my_dict[part].values(),dtype=np.int)).round()
-     temperature[serial_number][file_timestamp][part]['min']=np.min(np.array(my_dict[part].values(),dtype=np.int)).round()
-     temperature[serial_number][file_timestamp][part]['mean']=np.mean(np.array(my_dict[part].values(),dtype=np.int)).round()
-     temperature[serial_number][file_timestamp][part]['std']=np.std(np.array(my_dict[part].values(),dtype=np.int)).round()
-
+        try:
+            temperature[serial_number][file_timestamp][part]={}
+            temperature[serial_number][file_timestamp][part]['max']=np.max(np.array(my_dict[part].values(),dtype=np.int)).round()
+            temperature[serial_number][file_timestamp][part]['min']=np.min(np.array(my_dict[part].values(),dtype=np.int)).round()
+            temperature[serial_number][file_timestamp][part]['mean']=np.mean(np.array(my_dict[part].values(),dtype=np.int)).round()
+            temperature[serial_number][file_timestamp][part]['std']=np.std(np.array(my_dict[part].values(),dtype=np.int)).round()
+        except:
+            temperature[serial_number][file_timestamp][part]['max']='NA'
+            temperature[serial_number][file_timestamp][part]['min']='NA'
+            temperature[serial_number][file_timestamp][part]['mean']='NA'
+            temperature[serial_number][file_timestamp][part]['std']='NA'
 # print temperature
     print "Part\tMax\tMin\tMean\tstd"
     for part in my_dict:
@@ -54,7 +59,7 @@ def print_temperature(temp_log_filename,temperature):
 #print 'Timestamp: '+ datetime.strptime(parse_temp_filename(sys.argv[1])[3], '%Y%m%d%H%M').strftime('%d-%m-%Y %H:%M:%S')
 #print_temperature(sys.argv[1],temperature)
 
-for filename in os.listdir('./'):
+for filename in os.listdir('./temp_results/'):
     if filename.endswith(".log"): 
         print filename
         print_temperature(filename,temperature)
